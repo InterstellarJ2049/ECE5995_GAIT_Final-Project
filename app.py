@@ -16,7 +16,7 @@ def transcribe():
     filename = audio_file.filename
     if not filename.endswith('.wav'):  # Ensure it has the .wav extension
         filename += '.wav'
-    filename = os.path.join('D:/UIowa/ECE5995GAIT/FinalProject/', filename)
+    filename = os.path.join('./', filename)
     audio_file.save(filename)
 
     transcription = transcribe_audio(filename)
