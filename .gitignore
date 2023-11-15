@@ -1,3 +1,6 @@
 # Ignore .vs folder
 .vs/
 data/
+/ffmpeg.exe
+/ffplay.exe
+/ffprobe.exe
