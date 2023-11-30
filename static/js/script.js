@@ -59,6 +59,7 @@ function sendAudioToServer(blob) {
         // Display the transcription
         console.log( data.transcription );
         document.getElementById('transcriptionOutput').value = data.transcription;
+        checkAndTranslate();
     });
 }
 
@@ -119,7 +120,7 @@ function sendLanguageAudioToServer(blob) {
     .then(data => {
         document.getElementById('detectedLanguageOutput').value = data.detected_language;
         // Call translateText() after obtaining the detected language
-        translateText();
+        checkAndTranslate();
     })
     .catch(error => console.error('Error:', error));
 }
@@ -138,7 +139,47 @@ function translateText() {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('translationOutput').value = data.translated_text;
+        // Set the translated text in the textbox
+        const translationOutput = document.getElementById('translationOutput');
+        translationOutput.value = data.translated_text;
+
+        // Request text-to-speech for the translated text
+        requestTextToSpeech(data.translated_text);
     })
     .catch(error => console.error('Error:', error));
 }
+
+
+function checkAndTranslate() {
+    const originalText = document.getElementById('transcriptionOutput').value;
+    const detectedLanguage = document.getElementById('detectedLanguageOutput').value;
+
+    // Check if both text and language are available
+    if (originalText && detectedLanguage) {
+        translateText();
+    }
+}
+
+
+function requestTextToSpeech(translatedText) {
+    fetch('/text_to_speech', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: translatedText })
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const audioPlayer = document.getElementById('translatedAudioPlayback');
+        audioPlayer.src = url;
+        audioPlayer.style.display = 'block'; // Make the audio control visible
+        // Optionally, you can automatically start playing
+        // audioPlayer.play();
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+

@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, Response, jsonify, render_template, send_from_directory
 from utils.whisper_api import transcribe_audio
 from utils.chatgpt_api import detect_language, translate_text
-#from utils.tts_api import text_to_speech
+from utils.tts_api import text_to_speech
 import os
 
 app = Flask(__name__)
@@ -52,6 +52,21 @@ def translate():
 
     translated_text = translate_text(original_text, target_language)
     return jsonify({'translated_text': translated_text})
+
+
+@app.route('/text_to_speech', methods=['POST'])
+def tts():
+    data = request.json
+    text = data.get('text')
+
+    filename = text_to_speech(text)  # This should return the path to the audio file
+    with open(filename, 'rb') as audio_file:
+        audio_data = audio_file.read()
+        
+    # Convert audio data to a blob
+    return Response(audio_data, mimetype="audio/wav")
+
+
 
 '''
 @app.route('/tts', methods=['POST'])
