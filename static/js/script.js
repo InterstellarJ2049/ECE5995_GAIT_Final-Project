@@ -87,7 +87,7 @@ function startLanguageRecording() {
             });
 
             isLanguageRecording = true;
-            document.getElementById('toggleLanguageRecordButton').textContent = 'Stop Recording';
+            document.getElementById('toggleLanguageRecordButton').textContent = '⏹️ Stop Recording';
         });
 }
 
@@ -104,7 +104,7 @@ function stopLanguageRecording() {
         sendLanguageAudioToServer(audioBlob);
 
         isLanguageRecording = false;
-        document.getElementById('toggleLanguageRecordButton').textContent = 'Start Recording';
+        document.getElementById('toggleLanguageRecordButton').textContent = '🔴 Start Recording';
     });
 }
 
