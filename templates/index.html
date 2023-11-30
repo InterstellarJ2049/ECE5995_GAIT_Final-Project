@@ -4,24 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETranslator</title>
-    <!-- Add any additional CSS or JS links here -->
+    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
+    <header class="text-center">
         <h1>EJay and Tommy's Translator</h1>
         <img src="/static/title_image.png" alt="Title Image" style="width:100%; max-width:600px;">
     </header>
 
-    <!-- Add your content here -->
-    <button id="toggleRecordButton" class="btn btn-primary">🔴 Start Recording</button>
-    <audio id="audioPlayback" controls style="display: none;"></audio>
-    
-    <textarea id="transcriptionOutput" rows="4" cols="50" readonly></textarea>
+    <div class="container mt-4">
+        <!-- First Section: Language Detection from the Speaker -->
+        <div class="row mb-5">
+            <div class="col">
+                <h2>Language Detection from the Speaker</h2>
+                <button id="toggleRecordButton" class="btn btn-primary">🔴 Start Recording</button>
+                <audio id="audioPlayback" controls style="display: none;"></audio>
+                <textarea id="transcriptionOutput" class="form-control mt-3" rows="4" readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Second Section: Language Detection from the User -->
+        <div class="row">
+            <div class="col">
+                <h2>Language Detection from the User</h2>
+                <button id="toggleLanguageRecordButton" class="btn btn-secondary">Start Recording</button>
+                <audio id="languageAudioPlayback" controls style="display: none;"></audio>
+                <textarea id="detectedLanguageOutput" class="form-control mt-3" rows="2" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <textarea id="translationOutput" class="form-control mt-3" rows="4" readonly></textarea>
+
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-    <footer>
+    <footer class="mt-4">
         <!-- Footer content -->
     </footer>
 </body>
