@@ -8,12 +8,12 @@ def detect_language(text):
     """
 
     client = openai.OpenAI(api_key='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')
-    prompt = f"Determine the language of this text: {text}. Please only return the type of language no other words."
+    prompt = f"Determine the language of this text: {text}."
     try:
         response = client.chat.completions.create(
             model="gpt-4-1106-preview",  # Adjust the engine as needed
             messages=[
-                {"role": "system", "content": "You are a language detection assistant."},
+                {"role": "system", "content": "You are a language detection assistant. You will receive the user's request to determine the language of some text. Please only return the type of language with no other words."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=24  # Adjust as necessary
@@ -32,13 +32,13 @@ def translate_text(text, target_language):
     :return: Translated text.
     """
     client = openai.OpenAI(api_key='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')
-    prompt = f"Translate the following text to {target_language}: {text}. No more other words or prompts other than the language translation."
+    prompt = f"Translate the following text to {target_language}: {text}."
     try:
         response = client.chat.completions.create(
             model="gpt-4-1106-preview",
             # Constructing the messages for a chat-based interaction
             messages = [
-                {"role": "system", "content": "You are a translation assistant."},
+                {"role": "system", "content": "You are a translation assistant. You will receive the user's request to translate some text to a targeted type of language. Please don't respond any more words or prompts other than the language translation. Thank you!"},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=128  # Adjust as necessary
