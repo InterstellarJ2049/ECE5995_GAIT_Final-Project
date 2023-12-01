@@ -22,6 +22,34 @@ function captureImage() {
     processImage(base64Image);
 }
 
+// Function to handle the file upload
+function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    if (file) {
+        // Code to send the file to the Flask backend for processing
+        // This might involve creating a FormData object and using fetch() or XMLHttpRequest
+        // Example:
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        fetch('/process_image', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response from the server
+            console.log(data);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+
+// Event listener for the upload button
+document.getElementById('upload').addEventListener('click', uploadFile);
+
+
 // Send the image to the server for processing
 function processImage(base64Image) {
     toggleLoader(true); // Show the loader
