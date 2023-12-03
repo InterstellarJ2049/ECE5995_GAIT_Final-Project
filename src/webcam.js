@@ -26,29 +26,35 @@ function captureImage() {
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
+    // if (file) {
+    //     // Code to send the file to the Flask backend for processing
+    //     // This might involve creating a FormData object and using fetch() or XMLHttpRequest
+    //     // Example: this part is incorrect, because it is already in "function processImage(base64Image)"
+    //     const formData = new FormData();
+    //     formData.append('file', file);        
+    //     fetch('/process_image', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         // Handle the response from the server
+    //         console.log(data);
+    //     })
+    //     .catch(error => console.error('Error:', error));
+    // }
     if (file) {
-        // Code to send the file to the Flask backend for processing
-        // This might involve creating a FormData object and using fetch() or XMLHttpRequest
-        // Example:
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        fetch('/process_image', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Handle the response from the server
-            console.log(data);
-        })
-        .catch(error => console.error('Error:', error));
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            const base64Image = reader.result.split(',')[1];
+            processImage(base64Image);  // Call processImage with the base64 string
+        };
+        reader.readAsDataURL(file);  // Read the file and trigger reader.onloadend
     }
 }
 
 // Event listener for the upload button
-document.getElementById('upload').addEventListener('click', uploadFile);
-
+// document.getElementById('upload').addEventListener('click', uploadFile);
 
 // Send the image to the server for processing
 function processImage(base64Image) {
@@ -140,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeWebcam();
 
     document.getElementById('capture').addEventListener('click', captureImage);
+    document.getElementById('upload').addEventListener('click', uploadFile);
     document.getElementById('switch-camera').addEventListener('click', switchCamera());
 
     // Other event listeners here...

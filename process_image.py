@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__, static_folder='src', static_url_path='/')
 
+# OpenAI API key
 DEFAULT_API_KEY = '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'
 
 @app.route('/')
@@ -47,6 +48,7 @@ def process_image_data(base64_image):
         json=payload
     )
 
+    print(response) # debug, get: <Response [200]>
     return response
 
 @app.route('/process_image', methods=['POST'])
@@ -64,6 +66,8 @@ def process_image():
 
     if response.status_code != 200:
         return jsonify({'error': 'Failed to process the image.'}), 500
+    
+    print(response.content) # debug, get expected output
     return response.content
 
 if __name__ == '__main__':
