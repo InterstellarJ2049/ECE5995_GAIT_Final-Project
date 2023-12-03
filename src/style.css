@@ -41,7 +41,20 @@ body {
             border-radius: 8px; /* Rounded corners for button */
             cursor: pointer;
         }
+        #upload {
+            width: 150px;
+            height: 50px;
+            margin-top: 20px;
+            background-color: #333333; /* Dark button background */
+            color: #ffffff; /* Light button text */
+            border: none;
+            border-radius: 8px; /* Rounded corners for button */
+            cursor: pointer;
+        }
         #capture:hover {
+            background-color: #454545; /* Lighter background on hover */
+        }
+        #upload:hover {
             background-color: #454545; /* Lighter background on hover */
         }
         #chatbox .user-message:nth-child(odd),
@@ -144,6 +157,12 @@ body {
 
     }
     #capture {
+        width: 100%; /* Full width to make it easily tappable */
+        height: 60px; /* Larger button for easy tapping */
+        font-size: 20px; /* Larger font size */
+        margin-top: 10px;
+    }
+    #upload {
         width: 100%; /* Full width to make it easily tappable */
         height: 60px; /* Larger button for easy tapping */
         font-size: 20px; /* Larger font size */
