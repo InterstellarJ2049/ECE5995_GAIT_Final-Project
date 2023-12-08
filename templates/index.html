@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETY-Translator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-center">
+        <h1>GAIT Final Project: ETY-Translator</h1>
+        <h4>Group member: EJay, Tommy, and Yan</h4>
+        <img src="/static/title_image_new.png" alt="Title Image" style="width:100%; max-width:500px;">
+    </header>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Left Half for User 1 -->
+            <div class="col-md-6">
+                <!-- Language Detection from User 1 -->
+                <h3>Language Detection from User 1</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleRecordButton_left" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="audioPlayback_left" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="transcriptionOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Language Detection from User 2 -->
+                <h3>Language Detection from User 2</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleLanguageRecordButton_left" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="languageAudioPlayback_left" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="detectedLanguageOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Translation Output Section for User 1 -->
+                <h3>Translation Output for User 1</h3>
+                <!-- Audio control for translated text-to-speech -->
+                <audio id="translatedAudioPlayback_left" controls style="display: none;"></audio>
+                <textarea id="translationOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+            </div>
+
+            <!-- Right Half for User 2 -->
+            <div class="col-md-6">
+                <!-- Language Detection from User 2 -->
+                <h3>Language Detection from User 2</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleRecordButton_right" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="audioPlayback_right" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="transcriptionOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Language Detection from User 1 -->
+                <h3>Language Detection from User 1</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleLanguageRecordButton_right" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="languageAudioPlayback_right" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="detectedLanguageOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Translation Output Section for User 2 -->
+                <h3>Translation Output for User 2</h3>
+                <!-- Audio control for translated text-to-speech -->
+                <audio id="translatedAudioPlayback_right" controls style="display: none;"></audio>
+                <textarea id="translationOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+            </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <footer class="mt-4">
+        <!-- Footer content -->
+    </footer>
+</body>
+</html>

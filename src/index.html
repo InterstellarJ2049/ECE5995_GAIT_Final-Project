@@ -1,40 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>WebcamGPT-Vision</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETY-Translator</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div id="content-container">
-        <div id="webcam-container">
-            <video id="webcam" autoplay playsinline width="640" height="480"></video>
-            <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-            <button id="capture">Capture</button>
-            <!-- <button id="capture" class="button-style">Capture</button> -->
+    <header class="text-center">
+        <h1>GAIT Final Project: ETY-Translator</h1>
+        <h4>Group member: EJay, Tommy, and Yan</h4>
+        <img src="/static/title_image_new.png" alt="Title Image" style="width:100%; max-width:500px;">
+    </header>
 
-            <!-- New file input and upload button -->
-            <!-- <label for="fileInput" class="label-file button-style">Choose File</label> -->
-            <input type="file" id="fileInput" accept="image/*">
-            <button id="upload">Upload</button>
-            <!-- <button id="upload" class="button-style">Upload</button> -->
+    <!-- Existing team content -->
 
-            <button id="switch-camera">Switch Camera</button>
+    <!-- Your WebcamGPT-Vision integration starts here -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>WebcamGPT-Vision</h2>
+                <div id="webcam-container" class="text-center">
+                    <video id="webcam" autoplay playsinline class="img-thumbnail"></video>
+                    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+                    <!-- Use Bootstrap button styles -->
+                    <button id="capture" class="btn btn-primary mt-2">Capture</button>
+                    <input type="file" id="fileInput" accept="image/*" class="mt-2">
+                    <button id="upload" class="btn btn-secondary mt-2">Upload</button>
+                    <button id="switch-camera" class="btn btn-info mt-2">Switch Camera</button>
+                </div>
+                <div id="chatbox" class="mt-4">
+                    <!-- Loader will go here, hidden initially -->
+                    <div class="loader" style="display: none;"></div>
+                    <!-- Chat messages with HTML tags will be appended here -->
+                </div>
+            </div>
         </div>
-
-        <div id="chatbox">
-            <!-- Loader will go here, hidden initially -->
-            <div class="loader" style="display: none;"></div>
-            <!-- Chat messages with HTML tags will be appended here -->
-        </div>     
     </div>
+    <!-- Your integration ends here -->
 
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <!-- Make sure to include your webcam.js script -->
     <script src="webcam.js"></script>
 
-    <div id="footer">
-        Webcam is local on your browser, and <b>no images or keys are saved</b> by this demo.<br>
-        Dev'd by <a href="https://www.holorealitylab.com/gait">G6 of ECE5995 GAIT (UIowa)</a>
-    </div>
+    <footer class="text-center mt-4">
+        <p>Webcam is local on your browser, and <b>no images or keys are saved</b> by this demo.</p>
+        <p>Dev'd by <a href="https://www.holorealitylab.com/gait">G6 of ECE5995 GAIT (UIowa)</a></p>
+    </footer>
 </body>
 </html>

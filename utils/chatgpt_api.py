@@ -1,4 +1,9 @@
 import openai
+import base64
+import requests
+
+# OpenAI API key
+DEFAULT_API_KEY = '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'
 
 def detect_language(text):
     """
@@ -48,6 +53,44 @@ def translate_text(text, target_language):
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+    
+def process_image_data(base64_image):
+    api_key = DEFAULT_API_KEY
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "What’s in this image? Be descriptive. ..."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 300
+    }
+
+    response = requests.post(
+        "https://api.openai.com/v1/chat/completions",
+        headers=headers,
+        json=payload
+    )
+
+    print(response) # debug, get: <Response [200]>
+    return response
 
 
 # Add additional functions as necessary
