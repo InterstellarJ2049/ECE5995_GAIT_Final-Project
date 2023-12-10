@@ -39,11 +39,20 @@
                 <div id="webcam-container" class="text-center">
                     <video id="webcam" autoplay playsinline class="img-thumbnail"></video>
                     <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-                    <!-- Use Bootstrap button styles -->
-                    <button id="capture" class="btn btn-primary mt-2">Capture</button>
-                    <input type="file" id="fileInput" accept="image/*" class="mt-2">
-                    <button id="upload" class="btn btn-secondary mt-2">Upload</button>
-                    <button id="switch-camera" class="btn btn-info mt-2">Switch Camera</button>
+                    
+                    <!-- Grouping Capture and Switch Camera closer to the center -->
+                    <div class="d-flex justify-content-center mt-2">
+                        <button id="capture" class="btn btn-primary mx-2">Capture</button>
+                        <button id="switch-camera" class="btn btn-info mx-2">Switch Camera</button>
+                    </div>
+    
+                    <!-- Styling the Choose File input as a button with a specific width -->
+                    <div class="d-flex justify-content-center mt-2">
+                        <button id="upload" class="btn btn-secondary mx-1" style="width: auto;">Upload</button>
+                        <label class="btn btn-secondary mx-1" for="fileInput" style="width: auto;">Choose File</label>
+                        <span id="file-chosen" class="mx-1">No file chosen</span>
+                        <input type="file" id="fileInput" accept="image/*" hidden onchange="updateFileName()">
+                    </div>
                 </div>
                 <!-- <div id="chatbox" class="mt-4"> -->
                 <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 500px; overflow-y: auto;">

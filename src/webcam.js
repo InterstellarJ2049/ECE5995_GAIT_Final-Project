@@ -22,6 +22,17 @@ function captureImage() {
     processImage(base64Image);
 }
 
+// Function to update the file name next to the Choose File button
+function updateFileName() {
+    var fileInput = document.getElementById('fileInput');
+    var fileChosen = document.getElementById('file-chosen');
+    if (fileInput.files.length > 0) {
+        fileChosen.textContent = fileInput.files[0].name;
+    } else {
+        fileChosen.textContent = 'No file chosen'; // Default text if no file is selected
+    }
+}
+
 // Function to handle the file upload
 function uploadFile() {
     const fileInput = document.getElementById('fileInput');
@@ -220,6 +231,8 @@ function switchCamera() {
     };
 }
 
+
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     initializeWebcam();
@@ -228,6 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('upload').addEventListener('click', uploadFile);
     document.getElementById('switch-camera').addEventListener('click', switchCamera());    
     document.getElementById('sendButton').addEventListener('click', sendMessage); // Event listener for the send button
+    document.getElementById('fileInput').addEventListener('change', updateFileName); // Event listener for the file input change event
 
 
     // Other event listeners here...
