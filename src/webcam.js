@@ -177,29 +177,40 @@ function appendToChatbox(message, isUserMessage) {
 
 function sendMessage() {
     const userInputField = document.getElementById('userInput');
-    const userMessage = userInputField.value;
+    // const userMessage = userInputField.value;
+    const userMessage = userInputField.value.trim();
 
-    // Append user's question to the chatbox
-    appendToChatbox(userMessage, true); // true indicating it's a user message
+    if (userMessage) {
+        // Append user's question to the chatbox
+        appendToChatbox(userMessage, true); // true indicating it's a user message
 
-    // Send the user input to the server
-    fetch('/process_user_input', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userMessage })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Append the AI response to the chatbox
-        appendToChatbox(data.response, false); // false indicating it's not a user message
-        userInputField.value = ''; // Clear the input field
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        appendToChatbox(`Error: ${error.message}`, false);
-    });
+        // Send the user input to the server
+        fetch('/process_user_input', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: userMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Append the AI response to the chatbox
+            appendToChatbox(data.response, false); // false indicating it's not a user message
+            userInputField.value = ''; // Clear the input field
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            appendToChatbox(`Error: ${error.message}`, false);
+        });
+    }
+}
+
+// Function to handle the Enter key press in the text input field
+function handleEnterKeyPress(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent the default action to stop form submission
+        sendMessage();
+    }
 }
 
 
@@ -241,6 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('upload').addEventListener('click', uploadFile);
     document.getElementById('switch-camera').addEventListener('click', switchCamera());    
     document.getElementById('sendButton').addEventListener('click', sendMessage); // Event listener for the send button
+    document.getElementById('userInput').addEventListener('keypress', handleEnterKeyPress); // Event listener for the Enter key press
     document.getElementById('fileInput').addEventListener('change', updateFileName); // Event listener for the file input change event
 
 
