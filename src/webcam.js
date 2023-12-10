@@ -183,6 +183,7 @@ function sendMessage() {
     if (userMessage) {
         // Append user's question to the chatbox
         appendToChatbox(userMessage, true); // true indicating it's a user message
+        userInputField.value = ''; // Clear the input field
 
         // Send the user input to the server
         fetch('/process_user_input', {
@@ -196,7 +197,7 @@ function sendMessage() {
         .then(data => {
             // Append the AI response to the chatbox
             appendToChatbox(data.response, false); // false indicating it's not a user message
-            userInputField.value = ''; // Clear the input field
+            // userInputField.value = ''; // Clear the input field
         })
         .catch(error => {
             console.error('Error:', error);
