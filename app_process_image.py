@@ -2,9 +2,13 @@ import os
 import base64
 import requests
 from flask import Flask, request, jsonify
-from utils.chatgpt_api import detect_language, translate_text, process_image_data
+from utils.chatgpt_api import detect_language, translate_text, process_image_data, generate_answer_based_on_context #, generate_image_description
 
 app = Flask(__name__, static_folder='src', static_url_path='/')
+
+# Store the context globally (this is simplified and not recommended for production)
+# In a production environment, consider using a database or user sessions to store context
+image_context = {}
 
 # OpenAI API key
 DEFAULT_API_KEY = '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' # Ejay's key
@@ -69,7 +73,38 @@ def process_image():
         return jsonify({'error': 'Failed to process the image.'}), 500
     
     print(response.content) # debug, get expected output
+    # return response.content
+    # Instead of directly returning the description, store it in the context
+    global image_context
+    image_context['description'] = response.content # image_description  # Store the image description
     return response.content
+    # return jsonify({'message': "What do you want to know regarding this picture you submit?"})
+
+@app.route('/process_user_input', methods=['POST'])
+def process_user_input():
+    data = request.json
+    user_message = data.get('message')
+
+    # Here, you would add the logic to process the user's message.
+    # This might involve sending the message to OpenAI's API or another service,
+    # or handling the logic directly if you're maintaining the context.
+
+    # Retrieve the stored image description
+    global image_context
+    description = image_context.get('description', '')
+
+    # For demonstration, let's just echo the message back
+    # response = f"You asked: {user_message}"
+
+    # Use the image description as context to generate an answer to the user's question
+    answer = generate_answer_based_on_context(description, user_message)
+    
+    # return jsonify({'response': response})
+    return jsonify({'response': answer})
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+# TODO:
+# 1. Add a loading signal for processing the user's image

@@ -113,6 +113,26 @@ function appendToChatbox(message, isUserMessage = false) {
     }
 }
 
+// Function to send user message to the server and display the response
+function sendMessage() {
+    const userInput = document.getElementById('userInput').value;
+    // Send the user input to the server
+    fetch('/process_user_input', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: userInput })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Display the response in the chatbox
+        appendToChatbox(data.response, false); // false indicating it's not a user message
+        document.getElementById('userInput').value = ''; // Clear the input field
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 // Function to switch the camera source
 function switchCamera() {
     const video = document.getElementById('webcam');
@@ -147,7 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('capture').addEventListener('click', captureImage);
     document.getElementById('upload').addEventListener('click', uploadFile);
-    document.getElementById('switch-camera').addEventListener('click', switchCamera());
+    document.getElementById('switch-camera').addEventListener('click', switchCamera());    
+    document.getElementById('sendButton').addEventListener('click', sendMessage); // Event listener for the send button
+
 
     // Other event listeners here...
 });
