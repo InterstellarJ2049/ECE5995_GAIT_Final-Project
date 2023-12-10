@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ETY-Translator</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .message-bubble {
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+        }
+        .assistant-message {
+            background-color: #e9ecef;
+            color: black;
+        }
+    </style>
 </head>
 <body>
     <header class="text-center">
@@ -29,14 +45,17 @@
                     <button id="upload" class="btn btn-secondary mt-2">Upload</button>
                     <button id="switch-camera" class="btn btn-info mt-2">Switch Camera</button>
                 </div>
-                <div id="chatbox" class="mt-4">
+                <!-- <div id="chatbox" class="mt-4"> -->
+                <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 500px; overflow-y: auto;">
                     <!-- Loader will go here, hidden initially -->
                     <div class="loader" style="display: none;"></div>
                     <!-- Chat messages with HTML tags will be appended here -->
                     <div id="messages"></div>
                     <!-- User input field -->
-                    <input type="text" id="userInput" class="form-control" placeholder="Type your question here...">
-                    <button id="sendButton" class="btn btn-primary">Send</button>
+                    <!-- <input type="text" id="userInput" class="form-control" placeholder="Type your question here..."> -->
+                    <input type="text" id="userInput" class="form-control mt-2" placeholder="Type your question here...">
+                    <!-- <button id="sendButton" class="btn btn-primary">Send</button> -->
+                    <button id="sendButton" class="btn btn-primary mt-2">Send</button>
                 </div>
             </div>
         </div>

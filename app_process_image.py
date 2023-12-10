@@ -72,7 +72,7 @@ def process_image():
     if response.status_code != 200:
         return jsonify({'error': 'Failed to process the image.'}), 500
     
-    print(response.content) # debug, get expected output
+    print("output:", response.content) # debug, get expected output
     # return response.content
     # Instead of directly returning the description, store it in the context
     global image_context
@@ -98,6 +98,10 @@ def process_user_input():
 
     # Use the image description as context to generate an answer to the user's question
     answer = generate_answer_based_on_context(description, user_message)
+
+    print("description:", description, "\n")
+    print("user_message:", user_message, "\n")
+    print("anwer:", answer, "\n")
     
     # return jsonify({'response': response})
     return jsonify({'response': answer})

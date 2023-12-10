@@ -95,43 +95,102 @@ function toggleLoader(show) {
     document.querySelector('.loader').style.display = show ? 'block' : 'none';
 }
 
-// Append messages to the chatbox
-function appendToChatbox(message, isUserMessage = false) {
-    const chatbox = document.getElementById('chatbox');
-    const messageElement = document.createElement('div');
-    const timestamp = new Date().toLocaleTimeString(); // Get the current time as a string
+// // Append messages to the chatbox
+// function appendToChatbox(message, isUserMessage = false) {
+//     const chatbox = document.getElementById('chatbox');
+//     const messageElement = document.createElement('div');
+//     const timestamp = new Date().toLocaleTimeString(); // Get the current time as a string
     
-    // Assign different classes based on the sender for CSS styling
-    messageElement.className = isUserMessage ? 'user-message' : 'assistant-message';
+//     // Assign different classes based on the sender for CSS styling
+//     messageElement.className = isUserMessage ? 'user-message' : 'assistant-message';
 
-    messageElement.innerHTML = `<div class="message-content">${message}</div>
-                                <div class="timestamp">${timestamp}</div>`;
-    if (chatbox.firstChild) {
-        chatbox.insertBefore(messageElement, chatbox.firstChild);
-    } else {
-        chatbox.appendChild(messageElement);
-    }
+//     messageElement.innerHTML = `<div class="message-content">${message}</div>
+//                                 <div class="timestamp">${timestamp}</div>`;
+//     if (chatbox.firstChild) {
+//         chatbox.insertBefore(messageElement, chatbox.firstChild);
+//     } else {
+//         chatbox.appendChild(messageElement);
+//     }
+// }
+
+// // Function to send user message to the server and display the response
+// function sendMessage() {
+//     const userInput = document.getElementById('userInput').value;
+//     // Send the user input to the server
+//     fetch('/process_user_input', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({ message: userInput })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         // Display the response in the chatbox
+//         appendToChatbox(data.response, false); // false indicating it's not a user message
+//         document.getElementById('userInput').value = ''; // Clear the input field
+//     })
+//     .catch(error => console.error('Error:', error));
+// }
+
+// function appendToChatbox(message, isUserMessage) {
+//     const chatbox = document.getElementById('chatbox');
+//     const messageElement = document.createElement('div');
+//     const timestamp = new Date().toLocaleTimeString(); // Get the current time as a string
+
+//     // Different classes for user and AI messages for styling
+//     messageElement.className = isUserMessage ? 'user-message' : 'assistant-message';
+//     messageElement.innerHTML = `<div class="message-content">${message}</div>
+//                                 <div class="timestamp">${timestamp}</div>`;
+
+//     chatbox.appendChild(messageElement);
+//     chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+// }
+
+function appendToChatbox(message, isUserMessage) {
+    const chatbox = document.getElementById('messages');
+    const messageElement = document.createElement('div');
+    messageElement.className = isUserMessage ? 'text-right' : 'text-left';
+    
+    const bubble = document.createElement('span');
+    bubble.className = `message-bubble ${isUserMessage ? 'user-message' : 'assistant-message'}`;
+    bubble.textContent = message;
+    bubble.innerHTML = message; // Use innerHTML to render HTML content
+    // bubble.innerHTML = `<div class="message-content">${message}</div>
+    //                     <div class="timestamp">${timestamp}</div>`;
+
+    messageElement.appendChild(bubble);
+    chatbox.appendChild(messageElement);
+    chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
 }
 
-// Function to send user message to the server and display the response
 function sendMessage() {
-    const userInput = document.getElementById('userInput').value;
+    const userInputField = document.getElementById('userInput');
+    const userMessage = userInputField.value;
+
+    // Append user's question to the chatbox
+    appendToChatbox(userMessage, true); // true indicating it's a user message
+
     // Send the user input to the server
     fetch('/process_user_input', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ message: userInput })
+        body: JSON.stringify({ message: userMessage })
     })
     .then(response => response.json())
     .then(data => {
-        // Display the response in the chatbox
+        // Append the AI response to the chatbox
         appendToChatbox(data.response, false); // false indicating it's not a user message
-        document.getElementById('userInput').value = ''; // Clear the input field
+        userInputField.value = ''; // Clear the input field
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+        console.error('Error:', error);
+        appendToChatbox(`Error: ${error.message}`, false);
+    });
 }
+
 
 // Function to switch the camera source
 function switchCamera() {
