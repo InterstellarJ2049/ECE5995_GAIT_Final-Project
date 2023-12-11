@@ -164,6 +164,12 @@ def process_image_data(base64_image):
 
 #         return response['choices'][0]['message']['content']
 
+# Define a function to check if the user's message is related to the image
+def is_image_related(user_message):
+    # This is a simple example using keyword checking
+    keywords = ['image', 'picture', 'photo', 'what is this', 'explain this']
+    return any(keyword in user_message.lower() for keyword in keywords)
+
 def process_image_communication(base64_image, user_message):
     api_key = DEFAULT_API_KEY
     headers = {
@@ -258,6 +264,32 @@ def process_image_communication(base64_image, user_message):
 
 #     # Combine the description and the user's message to form the prompt
 #     prompt = f"{description}\n\nUser: {user_message}\nAI:"
+
+def process_general_text(user_message):
+    """
+    Logic to handle general text that doesn't relate to the image
+    """
+    client = openai.OpenAI(api_key='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')
+    prompt = f"User: {user_message}\n" # f"Question: {user_message}."
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
+            # Constructing the messages for a chat-based interaction
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' general questions that doesn't relate to the image. Thank you!"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=1,
+            max_tokens=256, # Adjust as necessary
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        latest_response = response.choices[0].message.content
+        return latest_response.strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
 def generate_answer_based_on_context(base64_image, description, user_message):
     """
