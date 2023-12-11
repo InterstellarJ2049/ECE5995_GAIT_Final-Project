@@ -9,7 +9,7 @@ https://docs.google.com/document/d/1w2N27q_aIa3rBn-7CF8JnKecchoCfRD5b-NVD0MB-4I/
 
 ## ECE: 5995 GAIT Final Project Proposal
 
-Tommy Wang & Yijie Zhang
+Tommy Wang & Yijie Zhang & Yan Chen
 <br>
 Nov 14th, 2023
 
