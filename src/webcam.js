@@ -219,6 +219,7 @@ function sendMessage() {
     const userMessage = document.getElementById('userInput').value.trim();
 
     if (userMessage && base64Image) {
+        appendToChatbox(userMessage, true); // true indicating it's a user message
         const payload = {
             image: base64Image,
             message: userMessage
