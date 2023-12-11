@@ -3,25 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ETranslator</title>
-    <!-- Add any additional CSS or JS links here -->
+    <title>ETY-Translator</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .message-bubble {
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+        }
+        .assistant-message {
+            background-color: #e9ecef;
+            color: black;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>EJay and Tommy's Translator</h1>
-        <img src="/static/title_image.png" alt="Title Image" style="width:100%; max-width:600px;">
+    <header class="text-center">
+        <h1>GAIT Final Project: ETY-Translator</h1>
+        <h4>Group member: EJay, Tommy, and Yan</h4>
+        <img src="/static/title_image_new.png" alt="Title Image" style="width:100%; max-width:500px;">
     </header>
 
-    <!-- Add your content here -->
-    <button id="toggleRecordButton" class="btn btn-primary">🔴 Start Recording</button>
-    <audio id="audioPlayback" controls style="display: none;"></audio>
+    <!-- User speech to speech translation starts here -->
+    <div class="container mt-4">
+        <div class="col mt-4 text-center">
+            <h2>Speech-to-speech Translation</h2>
+        </div>
+        <div class="row mt-4">
+            <!-- Left Half for User 1 -->
+            <div class="col md-6">
+                <!-- Language Detection from User 1 -->
+                <h3>Language Detection from User 1</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleRecordButton_left" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="audioPlayback_left" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="transcriptionOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Language Detection from User 2 -->
+                <h3>Language Detection from User 2</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleLanguageRecordButton_left" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="languageAudioPlayback_left" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="detectedLanguageOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Translation Output Section for User 1 -->
+                <h3>Translation Output for User 1</h3>
+                <!-- Audio control for translated text-to-speech -->
+                <audio id="translatedAudioPlayback_left" controls style="display: none;"></audio>
+                <textarea id="translationOutput_left" class="form-control mt-3" rows="4" readonly></textarea>
+            </div>
+
+            <!-- Right Half for User 2 -->
+            <div class="col md-6">
+                <!-- Language Detection from User 2 -->
+                <h3>Language Detection from User 2</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleRecordButton_right" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="audioPlayback_right" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="transcriptionOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Language Detection from User 1 -->
+                <h3>Language Detection from User 1</h3>
+                <div class="d-flex align-items-center">
+                    <button id="toggleLanguageRecordButton_right" class="btn btn-primary">🔴 Start Recording</button>
+                    <audio id="languageAudioPlayback_right" controls style="display: none; margin-left: 10px;"></audio>
+                </div>
+                <textarea id="detectedLanguageOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+
+                <!-- Translation Output Section for User 2 -->
+                <h3>Translation Output for User 2</h3>
+                <!-- Audio control for translated text-to-speech -->
+                <audio id="translatedAudioPlayback_right" controls style="display: none;"></audio>
+                <textarea id="translationOutput_right" class="form-control mt-3" rows="4" readonly></textarea>
+            </div>
+            <!-- User speech to speech translation starts here -->
+
+    <!-- WebcamGPT-Vision integration starts here -->
+    <div class="container mt-4">
+        <div class="col mt-4 text-center">
+            <h2>WebcamGPT-Vision</h2>
+        </div>
+        <div class="row mt-4">
+            <div class="col md-12">
+                
+                <div id="webcam-container" class="text-center">
+                    <video id="webcam" autoplay playsinline class="img-thumbnail"></video>
+                    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+                    
+                    <!-- Grouping Capture and Switch Camera closer to the center -->
+                    <div class="d-flex justify-content-center mt-2">
+                        <button id="capture" class="btn btn-primary mx-2">Capture</button>
+                        <button id="switch-camera" class="btn btn-info mx-2">Switch Camera</button>
+                    </div>
     
-    <textarea id="transcriptionOutput" rows="4" cols="50" readonly></textarea>
+                    <!-- Styling the Choose File input as a button with a specific width -->
+                    <div class="d-flex justify-content-center mt-4">
+                        
+                        <label class="btn btn-secondary mx-1" for="fileInput" style="width: auto;">Choose File</label>
+                        <span id="file-chosen" class="mx-1">No file chosen</span>
+                        <input type="file" id="fileInput" accept="image/*" hidden onchange="updateFileName()">
+                    </div>
+                    <div class="d-flex justify-content-center mt-2">
+                        <button id="upload" class="btn btn-secondary mx-1" style="width: auto;">Upload</button>
+                    </div>
+                </div>
+                <!-- <div id="chatbox" class="mt-4"> -->
+                <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 500px; overflow-y: auto;">
+                    <!-- Loader will go here, hidden initially -->
+                    <div class="loader" style="display: none;"></div>
+                    <!-- Chat messages with HTML tags will be appended here -->
+                    <div id="messages"></div>
+                    <!-- User input field -->
+                    <!-- <input type="text" id="userInput" class="form-control" placeholder="Type your question here..."> -->
+                    <input type="text" id="userInput" class="form-control mt-2" placeholder="Type your question here...">
+                    <!-- <button id="sendButton" class="btn btn-primary">Send</button> -->
+                    <button id="sendButton" class="btn btn-primary mt-2">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- WebcamGPT-Vision integration ends here -->
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-    <footer>
+    <footer class="mt-4">
         <!-- Footer content -->
     </footer>
 </body>
