@@ -1,3 +1,7 @@
+
+// Global variable to store the base64 image data
+let base64Image = '';
+
 // Initialize the webcam and set event listeners
 function initializeWebcam() {
     const video = document.getElementById('webcam');
@@ -18,7 +22,8 @@ function captureImage() {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
+    // const base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
+    base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
     processImage(base64Image);
 }
 
@@ -57,7 +62,8 @@ function uploadFile() {
     if (file) {
         const reader = new FileReader();
         reader.onloadend = function() {
-            const base64Image = reader.result.split(',')[1];
+            // const base64Image = reader.result.split(',')[1];
+            base64Image = reader.result.split(',')[1];
             processImage(base64Image);  // Call processImage with the base64 string
         };
         reader.readAsDataURL(file);  // Read the file and trigger reader.onloadend
@@ -82,6 +88,8 @@ function processImage(base64Image) {
     .then(handleResponse)
     .catch(handleError);
 }
+
+
 
 // Handle the server response
 function handleResponse(data) {
@@ -175,34 +183,64 @@ function appendToChatbox(message, isUserMessage) {
     chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
 }
 
+// function sendMessage() {
+//     const userInputField = document.getElementById('userInput');
+//     // const userMessage = userInputField.value;
+//     const userMessage = userInputField.value.trim();
+
+//     if (userMessage) {
+//         // Append user's question to the chatbox
+//         appendToChatbox(userMessage, true); // true indicating it's a user message
+//         userInputField.value = ''; // Clear the input field
+
+//         // Send the user input to the server
+//         fetch('/process_user_input', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ message: userMessage })
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             // Append the AI response to the chatbox
+//             appendToChatbox(data.response, false); // false indicating it's not a user message
+//             // userInputField.value = ''; // Clear the input field
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             appendToChatbox(`Error: ${error.message}`, false);
+//         });
+//     }
+// }
+
+// Function to send the message and image data to the server
 function sendMessage() {
-    const userInputField = document.getElementById('userInput');
-    // const userMessage = userInputField.value;
-    const userMessage = userInputField.value.trim();
+    const userMessage = document.getElementById('userInput').value.trim();
 
-    if (userMessage) {
-        // Append user's question to the chatbox
-        appendToChatbox(userMessage, true); // true indicating it's a user message
-        userInputField.value = ''; // Clear the input field
+    if (userMessage && base64Image) {
+        const payload = {
+            image: base64Image,
+            message: userMessage
+        };
 
-        // Send the user input to the server
-        fetch('/process_user_input', {
+        fetch('/process_image_chat', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message: userMessage })
+            body: JSON.stringify(payload)
         })
         .then(response => response.json())
         .then(data => {
-            // Append the AI response to the chatbox
-            appendToChatbox(data.response, false); // false indicating it's not a user message
-            // userInputField.value = ''; // Clear the input field
+            appendToChatbox(data.response, false); // Display AI response in chatbox
         })
         .catch(error => {
             console.error('Error:', error);
             appendToChatbox(`Error: ${error.message}`, false);
         });
+
+        document.getElementById('userInput').value = ''; // Clear the input field
     }
 }
 

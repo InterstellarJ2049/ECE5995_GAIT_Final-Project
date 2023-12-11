@@ -2,6 +2,8 @@ import os
 import openai
 import base64
 import requests
+import cv2 # OpenCV
+import numpy as np
 
 # OpenAI API key
 DEFAULT_API_KEY = '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' # Ejay's key
@@ -93,6 +95,118 @@ def process_image_data(base64_image):
     print(response) # debug, get: <Response [200]>
     return response
 
+# def encode_image_to_base64(image: np.ndarray) -> str:
+#     """
+#     Encodes a given image represented as a NumPy array to a base64-encoded string.
+
+#     Parameters:
+#        image (np.ndarray): A NumPy array representing the image to be encoded.
+
+#     Returns:
+#        str: A base64-encoded string representing the input image in JPEG format.
+
+#     Raises:
+#        ValueError: If the image cannot be encoded to JPEG format.
+#    """
+
+#     success, buffer = cv2.imencode('.jpg', image)
+#     if not success:
+#         raise ValueError("Could not encode image to JPEG format.")
+
+#     encoded_image = base64.b64encode(buffer).decode('utf-8')
+#     return encoded_image
+
+
+# def compose_payload(image: np.ndarray, prompt: str) -> dict:
+#     """
+#     Composes a payload dictionary with a base64 encoded image and a text prompt for the GPT-4 Vision model.
+
+#     Args:
+#         image (np.ndarray): The image in the form of a NumPy array to encode and send.
+#         prompt (str): The prompt text to accompany the image in the payload.
+
+#     Returns:
+#         dict: A dictionary structured as a payload for the GPT-4 Vision model, including the model name,
+#               an array of messages each containing a role and content with text and the base64 encoded image,
+#               and the maximum number of tokens to generate.
+#     """
+#     base64_image = encode_image_to_base64(image)
+#     return {
+#         "model": "gpt-4-vision-preview",
+#         "messages": [
+#             {
+#                 "role": "user",
+#                 "content": [
+#                     {
+#                         "type": "text",
+#                         "text": prompt
+#                     },
+#                     {
+#                         "type": "image_url",
+#                         "image_url": {
+#                             "url": f"data:image/jpeg;base64,{base64_image}"
+#                         }
+#                     }
+#                 ]
+#             }
+#         ],
+#         "max_tokens": 300
+#     }
+
+# def process_image_communication(self, image: np.ndarray, prompt: str) -> str:
+#         headers = {
+#             "Content-Type": "application/json",
+#             "Authorization": f"Bearer {self.api_key}"
+#         }
+#         payload = compose_payload(image=image, prompt=prompt)
+#         response = requests.post("https://api.openai.com/v1/chat/completions",
+#                                  headers=headers, json=payload).json()
+
+#         return response['choices'][0]['message']['content']
+
+def process_image_communication(base64_image, user_message):
+    api_key = DEFAULT_API_KEY
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": user_message # "What’s in this image? Be descriptive. For each significant item recognized, wrap this word in <b> tags. Example: The image shows a <b>man</b> in front of a neutral-colored <b>wall</b>. He has short hair, wears <b>glasses</b>, and is donning a pair of over-ear <b>headphones</b>. ... Also output an itemized list of objects recognized, wrapped in <br> and <b> tags with label <br><b>Objects:."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 300
+    }
+
+    # response = requests.post(
+    #     "https://api.openai.com/v1/chat/completions",
+    #     headers=headers,
+    #     json=payload
+    # )
+
+    # print(response) # debug, get: <Response [200]>
+    # return response
+
+    response = requests.post("https://api.openai.com/v1/chat/completions",
+                                 headers=headers, json=payload).json()
+
+    return response['choices'][0]['message']['content']
+
 # def generate_image_description(image_data):
 #     # This function should take the image data as input and return a description.
 #     # For example, you might use an image processing API or model to analyze the image.
@@ -145,19 +259,22 @@ def process_image_data(base64_image):
 #     # Combine the description and the user's message to form the prompt
 #     prompt = f"{description}\n\nUser: {user_message}\nAI:"
 
-def generate_answer_based_on_context(description, user_message):
+def generate_answer_based_on_context(base64_image, description, user_message):
     """
     Communication with images.
     """
     client = openai.OpenAI(api_key='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')
-    prompt = f"{description}\n\nUser: {user_message}\nAI:" # f"Question: {user_message}."
+    prompt1 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
+    prompt2 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
     try:
         response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
             # Constructing the messages for a chat-based interaction
             messages = [
                 {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' questions about the images they submit.. Thank you!"},
-                {"role": "user", "content": prompt}
+                {"role": "assistant", "content": prompt1},
+                # {"role": "user", "content": "Here is an image:", "attachments": [{"data": base64_image, "mime_type": "image/jpeg"}]},
+                {"role": "user", "content": prompt2}
             ],
             temperature=1,
             max_tokens=256, # Adjust as necessary

@@ -1,10 +1,14 @@
 import os
 import base64
 import requests
-from flask import Flask, request, jsonify
-from utils.chatgpt_api import detect_language, translate_text, process_image_data, generate_answer_based_on_context #, generate_image_description
+from flask import Flask, request, jsonify, session
+from flask_session import Session  # You might need to install flask-session
+from utils.chatgpt_api import detect_language, translate_text, process_image_data, process_image_communication, generate_answer_based_on_context #, generate_image_description
 
 app = Flask(__name__, static_folder='src', static_url_path='/')
+app.config["SECRET_KEY"] = os.urandom(24)  # Generate a random secret key
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 # Store the context globally (this is simplified and not recommended for production)
 # In a production environment, consider using a database or user sessions to store context
@@ -69,8 +73,19 @@ def process_image():
             return jsonify({'error': 'No image data received.'}), 400
         response = process_image_data(base64_image)
 
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to process the image.'}), 500
+    # if response.status_code != 200:
+    #     return jsonify({'error': 'Failed to process the image.'}), 500
+    
+    # if response.status_code == 200:
+    #     # Assuming the response is the description text
+    #     description = response.json()['choices'][0]['message']['content']
+    #     # Store the description and the image in the user's session
+    #     session['image_description'] = description
+    #     session['base64_image'] = base64_image
+    #     # return jsonify({'message': "What do you want to know about this picture?"})
+    #     return response.content
+    # else:
+    #     return jsonify({'error': 'Failed to process the image.'}), 500
     
     print("output:", response.content) # debug, get expected output
     # return response.content
@@ -80,31 +95,79 @@ def process_image():
     return response.content
     # return jsonify({'message': "What do you want to know regarding this picture you submit?"})
 
-@app.route('/process_user_input', methods=['POST'])
-def process_user_input():
-    data = request.json
-    user_message = data.get('message')
+@app.route('/process_image_chat', methods=['POST'])
+def process_image_chat():
+    if 'file' in request.files:
+        file = request.files['file']
+        base64_image = base64.b64encode(file.read()).decode('utf-8')
+        data = request.json
+        user_message = data.get('message')
+        response = process_image_communication(base64_image, user_message)
+    else:
+        data = request.json
+        user_message = data.get('message')
+        base64_image = data.get('image', '')
+        if not base64_image:
+            return jsonify({'error': 'No image data received.'}), 400
+        response = process_image_communication(base64_image, user_message)
 
-    # Here, you would add the logic to process the user's message.
-    # This might involve sending the message to OpenAI's API or another service,
-    # or handling the logic directly if you're maintaining the context.
-
-    # Retrieve the stored image description
-    global image_context
-    description = image_context.get('description', '')
-
-    # For demonstration, let's just echo the message back
-    # response = f"You asked: {user_message}"
-
-    # Use the image description as context to generate an answer to the user's question
-    answer = generate_answer_based_on_context(description, user_message)
-
-    print("description:", description, "\n")
-    print("user_message:", user_message, "\n")
-    print("anwer:", answer, "\n")
+    # if response.status_code != 200:
+    #     return jsonify({'error': 'Failed to process the image.'}), 500
     
-    # return jsonify({'response': response})
-    return jsonify({'response': answer})
+    # if response.status_code == 200:
+    #     # Assuming the response is the description text
+    #     description = response.json()['choices'][0]['message']['content']
+    #     # Store the description and the image in the user's session
+    #     session['image_description'] = description
+    #     session['base64_image'] = base64_image
+    #     # return jsonify({'message': "What do you want to know about this picture?"})
+    #     return response.content
+    # else:
+    #     return jsonify({'error': 'Failed to process the image.'}), 500
+    
+    print("output_chat:", response, "\n") # response.content, debug, get expected output
+    print("user_message:", user_message, "\n")
+    # return response.content
+    # Instead of directly returning the description, store it in the context
+    global image_context
+    image_context['description'] = response # image_description  # Store the image description
+    # return response.content
+    return jsonify({'response': response})
+    # return jsonify({'message': "What do you want to know regarding this picture you submit?"})
+
+# @app.route('/process_user_input', methods=['POST'])
+# def process_user_input():
+#     data = request.json
+#     user_message = data.get('message')
+
+#     # Here, you would add the logic to process the user's message.
+#     # This might involve sending the message to OpenAI's API or another service,
+#     # or handling the logic directly if you're maintaining the context.
+
+#     # # Retrieve the stored image description
+#     # global image_context
+#     # description = image_context.get('description', '')
+
+#     # Retrieve the stored image description and image from the user's session
+#     description = session.get('image_description', '')
+#     base64_image = session.get('base64_image', '')
+
+#     # For demonstration, let's just echo the message back
+#     # response = f"You asked: {user_message}"
+
+#     # file = request.files['file']
+#     # base64_image = base64.b64encode(file.read()).decode('utf-8')
+
+#     # Use the image description as context to generate an answer to the user's question
+#     # Use the stored description and image as context to generate an answer
+#     answer = generate_answer_based_on_context(base64_image, description, user_message)
+
+#     print("description:", description, "\n")
+#     print("user_message:", user_message, "\n")
+#     print("anwer:", answer, "\n")
+    
+#     # return jsonify({'response': response})
+#     return jsonify({'response': answer})
 
 if __name__ == '__main__':
     app.run(debug=True)
