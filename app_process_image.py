@@ -210,3 +210,5 @@ if __name__ == '__main__':
 
 # TODO:
 # 1. Add a loading signal for processing the user's image
+# 2. Add a loading signal for processing the user's message
+# 3. Add judgement for if the file uploaded is an image or not
