@@ -104,26 +104,46 @@ def process_image_chat():
         user_message = data.get('message')
         # response = process_image_communication(base64_image, user_message)
         # Check if the user message is related to the image
-        if is_image_related(user_message) and base64_image:
-            # The message is related to the image, so we process it accordingly
-            response = process_image_communication(base64_image, user_message)
+        # if is_image_related(user_message) and base64_image:
+        #     # The message is related to the image, so we process it accordingly
+        #     response = process_image_communication(base64_image, user_message)
+        # else:
+        #     # The message is not related to the image, or there is no image provided
+        #     # So we process it as a general text message
+        #     response = process_general_text(user_message)
+        if base64_image:
+            if is_image_related(user_message) and base64_image:
+                # The message is related to the image, so we process it accordingly
+                response = process_image_communication(base64_image, user_message)
+            else:
+                # The message is not related to the image, or there is no image provided
+                # So we process it as a general text message
+                response = process_general_text(user_message)
         else:
-            # The message is not related to the image, or there is no image provided
-            # So we process it as a general text message
             response = process_general_text(user_message)
     else:
         data = request.json
         user_message = data.get('message')
         base64_image = data.get('image', '')
-        if not base64_image:
-            return jsonify({'error': 'No image data received.'}), 400
+        # if not base64_image:
+        #     return jsonify({'error': 'No image data received.'}), 400
         # response = process_image_communication(base64_image, user_message)
-        if is_image_related(user_message) and base64_image:
-            # The message is related to the image, so we process it accordingly
-            response = process_image_communication(base64_image, user_message)
+        # if is_image_related(user_message) and base64_image:
+        #     # The message is related to the image, so we process it accordingly
+        #     response = process_image_communication(base64_image, user_message)
+        # else:
+        #     # The message is not related to the image, or there is no image provided
+        #     # So we process it as a general text message
+        #     response = process_general_text(user_message)
+        if base64_image:
+            if is_image_related(user_message) and base64_image:
+                # The message is related to the image, so we process it accordingly
+                response = process_image_communication(base64_image, user_message)
+            else:
+                # The message is not related to the image, or there is no image provided
+                # So we process it as a general text message
+                response = process_general_text(user_message)
         else:
-            # The message is not related to the image, or there is no image provided
-            # So we process it as a general text message
             response = process_general_text(user_message)
 
     # if response.status_code != 200:

@@ -214,17 +214,57 @@ function appendToChatbox(message, isUserMessage) {
 //     }
 // }
 
-// Function to send the message and image data to the server
+// // Function to send the message and image data to the server
+// function sendMessage() {
+//     const userMessage = document.getElementById('userInput').value.trim();
+
+//     if (userMessage && base64Image) {
+//         appendToChatbox(userMessage, true); // true indicating it's a user message
+//         const payload = {
+//             image: base64Image,
+//             message: userMessage
+//         };
+
+//         fetch('/process_image_chat', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(payload)
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             appendToChatbox(data.response, false); // Display AI response in chatbox
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             appendToChatbox(`Error: ${error.message}`, false);
+//         });
+
+//         document.getElementById('userInput').value = ''; // Clear the input field
+//     }
+// }
+
 function sendMessage() {
-    const userMessage = document.getElementById('userInput').value.trim();
+    const userInputField = document.getElementById('userInput');
+    const userMessage = userInputField.value.trim();
 
-    if (userMessage && base64Image) {
+    // Clear the input field immediately after the "Send" button is clicked or Enter is pressed
+    userInputField.value = '';
+
+    if (userMessage) {
+        // Append user's question to the chatbox regardless of whether an image is present
         appendToChatbox(userMessage, true); // true indicating it's a user message
-        const payload = {
-            image: base64Image,
-            message: userMessage
-        };
 
+        // // Prepare the payload, whether or not there is an image present
+        // const payload = {
+        //     image: base64Image, // this will be an empty string if no image is present
+        //     message: userMessage
+        // };
+        // Prepare the payload, if there's an image include it, otherwise just send the message
+        const payload = base64Image ? { image: base64Image, message: userMessage } : { message: userMessage };
+
+        // Make the request to the server
         fetch('/process_image_chat', {
             method: 'POST',
             headers: {
@@ -234,16 +274,78 @@ function sendMessage() {
         })
         .then(response => response.json())
         .then(data => {
-            appendToChatbox(data.response, false); // Display AI response in chatbox
+            // Append the AI response to the chatbox
+            // appendToChatbox(data.response, false); // false indicating it's not a user message
+            console.log(data); // Check what data you're receiving
+            if (data.response !== undefined) {
+                appendToChatbox(data.response, false); // Display AI response in chatbox
+            } else {
+                appendToChatbox("No response received from the server.", false);
+            }
         })
         .catch(error => {
             console.error('Error:', error);
             appendToChatbox(`Error: ${error.message}`, false);
         });
-
-        document.getElementById('userInput').value = ''; // Clear the input field
+    } else {
+        // If the user has not entered any message, inform them
+        appendToChatbox('Please enter a message to send.', true);
     }
 }
+
+// function sendMessage() {
+//     const userInputField = document.getElementById('userInput');
+//     const userMessage = userInputField.value.trim();
+
+//     // Clear the input field immediately after the "Send" button is clicked or Enter is pressed
+//     userInputField.value = '';
+
+//     if (userMessage) {
+//         // Append user's question to the chatbox regardless of whether an image is present
+//         appendToChatbox(userMessage, true); // true indicating it's a user message
+
+//         // Prepare the payload, whether or not there is an image present
+//         const payload = {
+//             image: base64Image, // this could be an empty string if no image is present
+//             message: userMessage
+//         };
+
+//         // Make the request to the server
+//         fetch('/process_image_chat', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(payload)
+//         })
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Network response was not ok');
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             console.log('Data received:', data); // Log the data for debugging purposes
+//             // Append the AI response to the chatbox
+//             if (data.response) {
+//                 appendToChatbox(data.response, false); // false indicating it's not a user message
+//             } else {
+//                 // If there is no 'response' key in the data, show a default message or log it
+//                 console.error('No response key in the received data');
+//                 appendToChatbox('No response received from the server.', false);
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             appendToChatbox(`Error: ${error.message}`, false);
+//         });
+//     } else {
+//         // If the user has not entered any message, inform them
+//         appendToChatbox('Please enter a message to send.', true);
+//     }
+// }
+
+
 
 // Function to handle the Enter key press in the text input field
 function handleEnterKeyPress(event) {
