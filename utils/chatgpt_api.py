@@ -55,7 +55,7 @@ def translate_text(text, target_language):
 # The following functions are for the webCam-GPT4V
 
 def process_image_data(base64_image):
-    api_key = "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"
+    api_key = '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'
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -92,32 +92,123 @@ def process_image_data(base64_image):
     print(response) # debug, get: <Response [200]>
     return response
 
+# def encode_image_to_base64(image: np.ndarray) -> str:
+#     """
+#     Encodes a given image represented as a NumPy array to a base64-encoded string.
 
-def generate_answer_based_on_context(description, user_message):
-    """
-    Communication with images.
-    """
-    client = openai.OpenAI(api_key='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')
-    prompt = f"{description}\n\nUser: {user_message}\nAI:" # f"Question: {user_message}."
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            # Constructing the messages for a chat-based interaction
-            messages = [
-                {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' questions about the images they submit.. Thank you!"},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=1,
-            max_tokens=256, # Adjust as necessary
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        latest_response = response.choices[0].message.content
-        return latest_response.strip()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+#     Parameters:
+#        image (np.ndarray): A NumPy array representing the image to be encoded.
+
+#     Returns:
+#        str: A base64-encoded string representing the input image in JPEG format.
+
+#     Raises:
+#        ValueError: If the image cannot be encoded to JPEG format.
+#    """
+
+#     success, buffer = cv2.imencode('.jpg', image)
+#     if not success:
+#         raise ValueError("Could not encode image to JPEG format.")
+
+#     encoded_image = base64.b64encode(buffer).decode('utf-8')
+#     return encoded_image
+
+
+# def compose_payload(image: np.ndarray, prompt: str) -> dict:
+#     """
+#     Composes a payload dictionary with a base64 encoded image and a text prompt for the GPT-4 Vision model.
+
+#     Args:
+#         image (np.ndarray): The image in the form of a NumPy array to encode and send.
+#         prompt (str): The prompt text to accompany the image in the payload.
+
+#     Returns:
+#         dict: A dictionary structured as a payload for the GPT-4 Vision model, including the model name,
+#               an array of messages each containing a role and content with text and the base64 encoded image,
+#               and the maximum number of tokens to generate.
+#     """
+#     base64_image = encode_image_to_base64(image)
+#     return {
+#         "model": "gpt-4-vision-preview",
+#         "messages": [
+#             {
+#                 "role": "user",
+#                 "content": [
+#                     {
+#                         "type": "text",
+#                         "text": prompt
+#                     },
+#                     {
+#                         "type": "image_url",
+#                         "image_url": {
+#                             "url": f"data:image/jpeg;base64,{base64_image}"
+#                         }
+#                     }
+#                 ]
+#             }
+#         ],
+#         "max_tokens": 300
+#     }
+
+# def process_image_communication(self, image: np.ndarray, prompt: str) -> str:
+#         headers = {
+#             "Content-Type": "application/json",
+#             "Authorization": f"Bearer {self.api_key}"
+#         }
+#         payload = compose_payload(image=image, prompt=prompt)
+#         response = requests.post("https://api.openai.com/v1/chat/completions",
+#                                  headers=headers, json=payload).json()
+
+#         return response['choices'][0]['message']['content']
+
+# Define a function to check if the user's message is related to the image
+def is_image_related(user_message):
+    # This is a simple example using keyword checking
+    keywords = ['image', 'picture', 'photo', 'what is this', 'explain this']
+    return any(keyword in user_message.lower() for keyword in keywords)
+
+def process_image_communication(base64_image, user_message):
+    api_key = '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'
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+
+    payload = {
+        "model": "gpt-4-vision-preview",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": user_message # "What’s in this image? Be descriptive. For each significant item recognized, wrap this word in <b> tags. Example: The image shows a <b>man</b> in front of a neutral-colored <b>wall</b>. He has short hair, wears <b>glasses</b>, and is donning a pair of over-ear <b>headphones</b>. ... Also output an itemized list of objects recognized, wrapped in <br> and <b> tags with label <br><b>Objects:."
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{base64_image}"
+                        }
+                    }
+                ]
+            }
+        ],
+        "max_tokens": 300
+    }
+
+    # response = requests.post(
+    #     "https://api.openai.com/v1/chat/completions",
+    #     headers=headers,
+    #     json=payload
+    # )
+
+    # print(response) # debug, get: <Response [200]>
+    # return response
+
+    response = requests.post("https://api.openai.com/v1/chat/completions",
+                                 headers=headers, json=payload).json()
+
+    return response['choices'][0]['message']['content']
 
 # def generate_image_description(image_data):
 #     # This function should take the image data as input and return a description.
@@ -170,5 +261,61 @@ def generate_answer_based_on_context(description, user_message):
 
 #     # Combine the description and the user's message to form the prompt
 #     prompt = f"{description}\n\nUser: {user_message}\nAI:"
+
+def process_general_text(user_message):
+    """
+    Logic to handle general text that doesn't relate to the image
+    """
+    client = openai.OpenAI(api_key='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')
+    prompt = f"User: {user_message}\n" # f"Question: {user_message}."
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
+            # Constructing the messages for a chat-based interaction
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' general questions that doesn't relate to the image. Thank you!"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=1,
+            max_tokens=256, # Adjust as necessary
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        latest_response = response.choices[0].message.content
+        return latest_response.strip()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+# def generate_answer_based_on_context(base64_image, description, user_message):
+#     """
+#     Communication with images.
+#     """
+#     client = openai.OpenAI(api_key='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')
+#     prompt1 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
+#     prompt2 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
+#     try:
+#         response = client.chat.completions.create(
+#             model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
+#             # Constructing the messages for a chat-based interaction
+#             messages = [
+#                 {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' questions about the images they submit.. Thank you!"},
+#                 {"role": "assistant", "content": prompt1},
+#                 # {"role": "user", "content": "Here is an image:", "attachments": [{"data": base64_image, "mime_type": "image/jpeg"}]},
+#                 {"role": "user", "content": prompt2}
+#             ],
+#             temperature=1,
+#             max_tokens=256, # Adjust as necessary
+#             top_p=1,
+#             frequency_penalty=0,
+#             presence_penalty=0
+#         )
+#         latest_response = response.choices[0].message.content
+#         return latest_response.strip()
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return None
+
 
 # Add additional functions as necessary
