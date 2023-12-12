@@ -3,7 +3,7 @@ import base64
 import requests
 from flask import Flask, request, jsonify #, session
 # from flask_session import Session  # You might need to install flask-session
-from utils.chatgpt_api import detect_language, translate_text, process_image_data, process_image_communication,is_image_related,process_general_text #, generate_answer_based_on_context #, generate_image_description
+from utils.chatgpt_api import detect_language, translate_text, process_image_data, process_image_communication, is_image_related, process_general_text #, generate_answer_based_on_context #, generate_image_description
 
 app = Flask(__name__, static_folder='src', static_url_path='/')
 # app.config["SECRET_KEY"] = os.urandom(24)  # Generate a random secret key
