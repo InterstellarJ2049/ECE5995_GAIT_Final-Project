@@ -1,5 +1,5 @@
 from flask import Flask, request, Response, jsonify, render_template
-# from utils.whisper_api import transcribe_audio # TODO: comment out temporarily
+from utils.whisper_api import transcribe_audio # TODO: comment out temporarily
 from utils.chatgpt_api import detect_language, translate_text, process_image_data, process_image_communication, is_image_related, process_general_text
 from utils.tts_api import text_to_speech
 import os
@@ -12,38 +12,38 @@ def index():
     return render_template('index.html')
 
 # <TODO: comment out temporarily start>
-# @app.route('/transcribe', methods=['POST'])
-# def transcribe():
-#     audio_file = request.files['audio']
-#     filename = audio_file.filename
-#     if not filename.endswith('.wav'):  # Ensure it has the .wav extension
-#         filename += '.wav'
-#     filename = os.path.join('./audio_storage', filename)
-#     audio_file.save(filename)
+@app.route('/transcribe', methods=['POST'])
+def transcribe():
+    audio_file = request.files['audio']
+    filename = audio_file.filename
+    if not filename.endswith('.wav'):  # Ensure it has the .wav extension
+        filename += '.wav'
+    filename = os.path.join('./audio_storage', filename)
+    audio_file.save(filename)
 
-#     transcription = transcribe_audio(filename)
+    transcription = transcribe_audio(filename)
 
-#     os.remove(filename)
-#     return jsonify({'transcription': transcription})
+    os.remove(filename)
+    return jsonify({'transcription': transcription})
 
-# @app.route('/detect_language', methods=['POST'])
-# def detect_language_route():
-#     audio_file = request.files['audio']
-#     filename = audio_file.filename
-#     if not filename.endswith('.wav'):  # Ensure it has the .wav extension
-#         filename += '.wav'
-#     filepath = os.path.join('./audio_storage', filename)
-#     audio_file.save(filepath)
+@app.route('/detect_language', methods=['POST'])
+def detect_language_route():
+    audio_file = request.files['audio']
+    filename = audio_file.filename
+    if not filename.endswith('.wav'):  # Ensure it has the .wav extension
+        filename += '.wav'
+    filepath = os.path.join('./audio_storage', filename)
+    audio_file.save(filepath)
 
-#     # Transcribe the audio to text
-#     transcription = transcribe_audio(filepath)
+    # Transcribe the audio to text
+    transcription = transcribe_audio(filepath)
 
-#     # Clean up: remove the audio file after transcription
-#     os.remove(filepath)
+    # Clean up: remove the audio file after transcription
+    os.remove(filepath)
 
-#     # Detect the language of the transcribed text
-#     detected_language = detect_language(transcription)
-#     return jsonify({'detected_language': detected_language})
+    # Detect the language of the transcribed text
+    detected_language = detect_language(transcription)
+    return jsonify({'detected_language': detected_language})
 # <TODO: comment out temporarily end>
 
 @app.route('/translate', methods=['POST'])
