@@ -98,7 +98,7 @@ def process_image_data(base64_image):
 # Define a function to check if the user's message is related to the image
 def is_image_related(user_message):
     # This is a simple example using keyword checking
-    keywords = ['image', 'picture', 'photo', 'what is this', 'explain this']
+    keywords = ['image', 'picture', 'photo', 'what is this', 'explain this', 'describe this', 'what do you see', 'what do you think', 'what do you think of this', 'what do you think about this', 'what do you think about this image', 'what do you think about this picture', 'what do you think about this photo', 'what do you think of this image', 'what do you think of this picture', 'what do you think of this photo', 'what do you think about this image', 'what do you think about this picture', 'what do you think about this photo', 'what do you think of this image', 'what do you think of this picture', 'what do you think of this photo', 'what do you think about this image', 'what do you think about this picture', 'what do you think about this photo', 'what do you think of this image', 'what do you think of this picture', 'what do you think of this photo','图片', '照片 ', '图像', '图', '相片', '截图']
     return any(keyword in user_message.lower() for keyword in keywords)
 
 # Process image with user input:

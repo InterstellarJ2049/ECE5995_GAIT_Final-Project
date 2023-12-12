@@ -114,16 +114,7 @@ def process_image_chat():
             # The message is not related to the image, or there is no image provided
             # So we process it as a general text message
             response = process_general_text(user_message)
-        # if base64_image:
-        #     if is_image_related(user_message) and base64_image:
-        #         # The message is related to the image, so we process it accordingly
-        #         response = process_image_communication(base64_image, user_message)
-        #     else:
-        #         # The message is not related to the image, or there is no image provided
-        #         # So we process it as a general text message
-        #         response = process_general_text(user_message)
-        # else:
-        #     response = process_general_text(user_message)
+
     else:
         data = request.json
         user_message = data.get('message')
@@ -137,19 +128,6 @@ def process_image_chat():
             # The message is not related to the image, or there is no image provided
             # So we process it as a general text message
             response = process_general_text(user_message)
-        # if base64_image:
-        #     if is_image_related(user_message) and base64_image:
-        #         # The message is related to the image, so we process it accordingly
-        #         response = process_image_communication(base64_image, user_message)
-        #     else:
-        #         # The message is not related to the image, or there is no image provided
-        #         # So we process it as a general text message
-        #         response = process_general_text(user_message)
-        # else:
-        #     response = process_general_text(user_message)
-
-    # if response.status_code != 200: # cause error: AttributeError: 'str' object has no attribute 'status_code'
-    #     return jsonify({'error': 'Failed to process the image.'}), 500
         
     print("output_chat:", response, "\n") # response.content, debug, get expected output
     print("user_message:", user_message, "\n")

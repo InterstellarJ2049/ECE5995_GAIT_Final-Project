@@ -342,27 +342,49 @@ function initializeWebcam() {
         });
 }
 
+// // Function to capture image from webcam and process it
+// function captureImage() {
+//     const video = document.getElementById('webcam');
+//     const canvas = document.getElementById('canvas');
+
+//     const captureButton = document.getElementById('capture');
+//     const capturedImage = document.getElementById('capturedImage');
+
+//     const context = canvas.getContext('2d');
+
+//     captureButton.onclick = () => {
+//         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+//         base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
+//         imageDataURL = canvas.toDataURL('image/jpeg')
+//         capturedImage.src = imageDataURL;
+//         processImage(base64Image);
+//     };            
+// }
+
+// Fixed the above function to the following, so that the image is captured at the first time click.
 // Function to capture image from webcam and process it
 function captureImage() {
     const video = document.getElementById('webcam');
     const canvas = document.getElementById('canvas');
-
-    const captureButton = document.getElementById('capture');
-    const capturedImage = document.getElementById('capturedImage');
-
     const context = canvas.getContext('2d');
 
-    captureButton.onclick = () => {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
-        imageDataURL = canvas.toDataURL('image/jpeg')
+    // Draw the video frame to the canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Get the image data URL from the canvas
+    base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
+    imageDataURL = canvas.toDataURL('image/jpeg');
+
+    // Optionally display the captured image on the page
+    const capturedImage = document.getElementById('capturedImage');
+    if (capturedImage) {
         capturedImage.src = imageDataURL;
-        processImage(base64Image);
-    };
-    // const base64Image = canvas.toDataURL('image/jpeg').split(',')[1];
-    
-    
+    }
+
+    // Process the image data
+    processImage(base64Image);
 }
+
 
 // Function to update the file name next to the Choose File button
 function updateFileName() {
@@ -380,23 +402,7 @@ function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     const capturedImage = document.getElementById('capturedImage');
     const file = fileInput.files[0];
-    // if (file) {
-    //     // Code to send the file to the Flask backend for processing
-    //     // This might involve creating a FormData object and using fetch() or XMLHttpRequest
-    //     // Example: this part is incorrect, because it is already in "function processImage(base64Image)"
-    //     const formData = new FormData();
-    //     formData.append('file', file);        
-    //     fetch('/process_image', {
-    //         method: 'POST',
-    //         body: formData
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         // Handle the response from the server
-    //         console.log(data);
-    //     })
-    //     .catch(error => console.error('Error:', error));
-    // }
+
     if (file) {
         const reader = new FileReader();
         reader.onloadend = function() {
@@ -409,9 +415,6 @@ function uploadFile() {
         reader.readAsDataURL(file);  // Read the file and trigger reader.onloadend
     }
 }
-
-// Event listener for the upload button
-// document.getElementById('upload').addEventListener('click', uploadFile);
 
 // Send the image to the server for processing
 function processImage(base64Image) {
@@ -428,8 +431,6 @@ function processImage(base64Image) {
     .then(handleResponse)
     .catch(handleError);
 }
-
-
 
 // Handle the server response
 function handleResponse(data) {
@@ -449,19 +450,6 @@ function handleError(error) {
     appendToChatbox(`Error: ${error.message}`, true);
 }
 
-// // Toggle the visibility of the loader
-// function toggleLoader(show) {
-//     document.querySelector('.loader').style.display = show ? 'block' : 'none';
-// }
-
-// // Toggle the visibility of the loader
-// function toggleLoader(show) {
-//     const loader = document.querySelector('.loader');
-//     if (loader) {
-//         loader.style.display = show ? 'block' : 'none';
-//     }
-// }
-
 // Toggle the visibility of the loader
 function toggleLoader(show) {
     const loader = document.querySelector('.loader');
@@ -473,59 +461,6 @@ function toggleLoader(show) {
         }
     }
 }
-
-
-// // Append messages to the chatbox
-// function appendToChatbox(message, isUserMessage = false) {
-//     const chatbox = document.getElementById('chatbox');
-//     const messageElement = document.createElement('div');
-//     const timestamp = new Date().toLocaleTimeString(); // Get the current time as a string
-    
-//     // Assign different classes based on the sender for CSS styling
-//     messageElement.className = isUserMessage ? 'user-message' : 'assistant-message';
-
-//     messageElement.innerHTML = `<div class="message-content">${message}</div>
-//                                 <div class="timestamp">${timestamp}</div>`;
-//     if (chatbox.firstChild) {
-//         chatbox.insertBefore(messageElement, chatbox.firstChild);
-//     } else {
-//         chatbox.appendChild(messageElement);
-//     }
-// }
-
-// // Function to send user message to the server and display the response
-// function sendMessage() {
-//     const userInput = document.getElementById('userInput').value;
-//     // Send the user input to the server
-//     fetch('/process_user_input', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({ message: userInput })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         // Display the response in the chatbox
-//         appendToChatbox(data.response, false); // false indicating it's not a user message
-//         document.getElementById('userInput').value = ''; // Clear the input field
-//     })
-//     .catch(error => console.error('Error:', error));
-// }
-
-// function appendToChatbox(message, isUserMessage) {
-//     const chatbox = document.getElementById('chatbox');
-//     const messageElement = document.createElement('div');
-//     const timestamp = new Date().toLocaleTimeString(); // Get the current time as a string
-
-//     // Different classes for user and AI messages for styling
-//     messageElement.className = isUserMessage ? 'user-message' : 'assistant-message';
-//     messageElement.innerHTML = `<div class="message-content">${message}</div>
-//                                 <div class="timestamp">${timestamp}</div>`;
-
-//     chatbox.appendChild(messageElement);
-//     chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
-// }
 
 function appendToChatbox(message, isUserMessage) {
     const chatbox = document.getElementById('messages');
@@ -543,68 +478,6 @@ function appendToChatbox(message, isUserMessage) {
     chatbox.appendChild(messageElement);
     chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
 }
-
-// function sendMessage() {
-//     const userInputField = document.getElementById('userInput');
-//     // const userMessage = userInputField.value;
-//     const userMessage = userInputField.value.trim();
-
-//     if (userMessage) {
-//         // Append user's question to the chatbox
-//         appendToChatbox(userMessage, true); // true indicating it's a user message
-//         userInputField.value = ''; // Clear the input field
-
-//         // Send the user input to the server
-//         fetch('/process_user_input', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({ message: userMessage })
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             // Append the AI response to the chatbox
-//             appendToChatbox(data.response, false); // false indicating it's not a user message
-//             // userInputField.value = ''; // Clear the input field
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             appendToChatbox(`Error: ${error.message}`, false);
-//         });
-//     }
-// }
-
-// // Function to send the message and image data to the server
-// function sendMessage() {
-//     const userMessage = document.getElementById('userInput').value.trim();
-
-//     if (userMessage && base64Image) {
-//         appendToChatbox(userMessage, true); // true indicating it's a user message
-//         const payload = {
-//             image: base64Image,
-//             message: userMessage
-//         };
-
-//         fetch('/process_image_chat', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(payload)
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             appendToChatbox(data.response, false); // Display AI response in chatbox
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             appendToChatbox(`Error: ${error.message}`, false);
-//         });
-
-//         document.getElementById('userInput').value = ''; // Clear the input field
-//     }
-// }
 
 function sendMessage() {
     const userInputField = document.getElementById('userInput');
@@ -657,60 +530,6 @@ function sendMessage() {
     }
 }
 
-// function sendMessage() {
-//     const userInputField = document.getElementById('userInput');
-//     const userMessage = userInputField.value.trim();
-
-//     // Clear the input field immediately after the "Send" button is clicked or Enter is pressed
-//     userInputField.value = '';
-
-//     if (userMessage) {
-//         // Append user's question to the chatbox regardless of whether an image is present
-//         appendToChatbox(userMessage, true); // true indicating it's a user message
-
-//         // Prepare the payload, whether or not there is an image present
-//         const payload = {
-//             image: base64Image, // this could be an empty string if no image is present
-//             message: userMessage
-//         };
-
-//         // Make the request to the server
-//         fetch('/process_image_chat', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify(payload)
-//         })
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error('Network response was not ok');
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             console.log('Data received:', data); // Log the data for debugging purposes
-//             // Append the AI response to the chatbox
-//             if (data.response) {
-//                 appendToChatbox(data.response, false); // false indicating it's not a user message
-//             } else {
-//                 // If there is no 'response' key in the data, show a default message or log it
-//                 console.error('No response key in the received data');
-//                 appendToChatbox('No response received from the server.', false);
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             appendToChatbox(`Error: ${error.message}`, false);
-//         });
-//     } else {
-//         // If the user has not entered any message, inform them
-//         appendToChatbox('Please enter a message to send.', true);
-//     }
-// }
-
-
-
 // Function to handle the Enter key press in the text input field
 function handleEnterKeyPress(event) {
     if (event.key === 'Enter') {
@@ -748,8 +567,6 @@ function switchCamera() {
     };
 }
 
-
-
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
     initializeWebcam();
@@ -760,7 +577,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sendButton').addEventListener('click', sendMessage); // Event listener for the send button
     document.getElementById('userInput').addEventListener('keypress', handleEnterKeyPress); // Event listener for the Enter key press
     document.getElementById('fileInput').addEventListener('change', updateFileName); // Event listener for the file input change event
-
 
     // Other event listeners here...
 });
