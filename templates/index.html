@@ -92,33 +92,38 @@
             <h2>WebcamGPT-Vision</h2>
         </div>
         <div class="row mt-4">
-            <div class="col md-12">
-                
-                <div id="webcam-container" class="text-center">
-                    <video id="webcam" autoplay playsinline class="img-thumbnail"></video>
-                    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-                    
-                    <!-- Grouping Capture and Switch Camera closer to the center -->
-                    <div class="d-flex justify-content-center mt-2">
-                        <button id="capture" class="btn btn-primary mx-2">Capture</button>
-                        <button id="switch-camera" class="btn btn-info mx-2">Switch Camera</button>
-                    </div>
-    
-                    <!-- Styling the Choose File input as a button with a specific width -->
-                    <div class="d-flex justify-content-center mt-4">
-                        
-                        <label class="btn btn-secondary mx-1" for="fileInput" style="width: auto;">Choose File</label>
-                        <span id="file-chosen" class="mx-1">No file chosen</span>
-                        <input type="file" id="fileInput" accept="image/*" hidden onchange="updateFileName()">
-                    </div>
-                    <div class="d-flex justify-content-center mt-2">
-                        <button id="upload" class="btn btn-secondary mx-1" style="width: auto;">Upload</button>
-                    </div>
+            <div class="col md-6 text-center">
+                <!-- Webcam Stream -->
+                <video id="webcam" autoplay playsinline class="img-thumbnail" width="480" height="320"></video>
+                <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+                <div class="d-flex justify-content-center mt-2">
+                    <button id="capture" class="btn btn-primary mx-2">Capture</button>
+                    <button id="switch-camera" class="btn btn-info mx-2">Switch Camera</button>
                 </div>
-                <!-- <div id="chatbox" class="mt-4"> -->
-                <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 500px; overflow-y: auto;">
+            </div>
+            <div class="col-md-6 text-center">
+                <!-- Captured Image -->
+                <img id="capturedImage" src="" alt="Captured image will appear here" class="img-fluid img-thumbnail" style="max-width: 480px; max-height: 320px;">
+                <div class="d-flex justify-content-center mt-4">
+                    <label class="btn btn-secondary mx-1" for="fileInput" style="width: auto;">Choose File</label>
+                    <span id="file-chosen" class="mx-1">No file chosen</span>
+                    <input type="file" id="fileInput" accept="image/*" hidden onchange="updateFileName()">
+                </div>
+                <div class="d-flex justify-content-center mt-2">
+                    <button id="upload" class="btn btn-secondary mx-1" style="width: auto;">Upload</button>
+                </div>
+            </div>
+        </div>
+        <div class="col md-12">
+            <!-- <div id="chatbox" class="mt-4"> -->
+            <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 800px; overflow-y: auto;">
                     <!-- Loader will go here, hidden initially -->
-                    <div class="loader" style="display: none;"></div>
+                    <!-- <div class="loader" style="display: none;"></div> -->
+                    <div class="loader d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>                    
                     <!-- Chat messages with HTML tags will be appended here -->
                     <div id="messages"></div>
                     <!-- User input field -->
@@ -126,7 +131,6 @@
                     <input type="text" id="userInput" class="form-control mt-2" placeholder="Type your question here...">
                     <!-- <button id="sendButton" class="btn btn-primary">Send</button> -->
                     <button id="sendButton" class="btn btn-primary mt-2">Send</button>
-                </div>
             </div>
         </div>
     </div>
@@ -136,6 +140,8 @@
 
     <footer class="mt-4">
         <!-- Footer content -->
+        <p>Webcam is local on your browser, and <b>no images or keys are saved</b> by this demo.</p>
+        <p>Dev'd by <a href="https://www.holorealitylab.com/gait">G6 of ECE5995 GAIT (UIowa)</a></p>
     </footer>
 </body>
 </html>
