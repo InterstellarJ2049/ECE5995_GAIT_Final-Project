@@ -109,10 +109,31 @@ function handleError(error) {
     appendToChatbox(`Error: ${error.message}`, true);
 }
 
+// // Toggle the visibility of the loader
+// function toggleLoader(show) {
+//     document.querySelector('.loader').style.display = show ? 'block' : 'none';
+// }
+
+// // Toggle the visibility of the loader
+// function toggleLoader(show) {
+//     const loader = document.querySelector('.loader');
+//     if (loader) {
+//         loader.style.display = show ? 'block' : 'none';
+//     }
+// }
+
 // Toggle the visibility of the loader
 function toggleLoader(show) {
-    document.querySelector('.loader').style.display = show ? 'block' : 'none';
+    const loader = document.querySelector('.loader');
+    if (loader) {
+        if (show) {
+            loader.classList.remove('d-none');
+        } else {
+            loader.classList.add('d-none');
+        }
+    }
 }
+
 
 // // Append messages to the chatbox
 // function appendToChatbox(message, isUserMessage = false) {
@@ -253,6 +274,7 @@ function sendMessage() {
     userInputField.value = '';
 
     if (userMessage) {
+        toggleLoader(true); // Show the loader
         // Append user's question to the chatbox regardless of whether an image is present
         appendToChatbox(userMessage, true); // true indicating it's a user message
 
@@ -274,6 +296,7 @@ function sendMessage() {
         })
         .then(response => response.json())
         .then(data => {
+            toggleLoader(false); // Hide the loader
             // Append the AI response to the chatbox
             // appendToChatbox(data.response, false); // false indicating it's not a user message
             console.log(data); // Check what data you're receiving
@@ -284,6 +307,7 @@ function sendMessage() {
             }
         })
         .catch(error => {
+            toggleLoader(false); // Hide the loader
             console.error('Error:', error);
             appendToChatbox(`Error: ${error.message}`, false);
         });

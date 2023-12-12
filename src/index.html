@@ -57,7 +57,12 @@
                 <!-- <div id="chatbox" class="mt-4"> -->
                 <div id="chatbox" class="mt-4 bg-light p-3 border" style="height: 500px; overflow-y: auto;">
                     <!-- Loader will go here, hidden initially -->
-                    <div class="loader" style="display: none;"></div>
+                    <!-- <div class="loader" style="display: none;"></div> -->
+                    <div class="loader d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>                    
                     <!-- Chat messages with HTML tags will be appended here -->
                     <div id="messages"></div>
                     <!-- User input field -->
