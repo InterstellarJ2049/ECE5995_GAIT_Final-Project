@@ -291,34 +291,34 @@ def process_general_text(user_message):
         print(f"An error occurred: {e}")
         return None
 
-def generate_answer_based_on_context(base64_image, description, user_message):
-    """
-    Communication with images.
-    """
-    client = openai.OpenAI(api_key='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')
-    prompt1 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
-    prompt2 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
-            # Constructing the messages for a chat-based interaction
-            messages = [
-                {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' questions about the images they submit.. Thank you!"},
-                {"role": "assistant", "content": prompt1},
-                # {"role": "user", "content": "Here is an image:", "attachments": [{"data": base64_image, "mime_type": "image/jpeg"}]},
-                {"role": "user", "content": prompt2}
-            ],
-            temperature=1,
-            max_tokens=256, # Adjust as necessary
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
-        )
-        latest_response = response.choices[0].message.content
-        return latest_response.strip()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+# def generate_answer_based_on_context(base64_image, description, user_message):
+#     """
+#     Communication with images.
+#     """
+#     client = openai.OpenAI(api_key='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')
+#     prompt1 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
+#     prompt2 = f"AI:{description}\n\nUser: {user_message}\n" # f"Question: {user_message}."
+#     try:
+#         response = client.chat.completions.create(
+#             model="gpt-4-vision-preview", # Adjust the engine as needed: gpt-4-vision-preview, gpt-4-1106-preview
+#             # Constructing the messages for a chat-based interaction
+#             messages = [
+#                 {"role": "system", "content": "You are a helpful assistant. You would help the users, answering the users' questions about the images they submit.. Thank you!"},
+#                 {"role": "assistant", "content": prompt1},
+#                 # {"role": "user", "content": "Here is an image:", "attachments": [{"data": base64_image, "mime_type": "image/jpeg"}]},
+#                 {"role": "user", "content": prompt2}
+#             ],
+#             temperature=1,
+#             max_tokens=256, # Adjust as necessary
+#             top_p=1,
+#             frequency_penalty=0,
+#             presence_penalty=0
+#         )
+#         latest_response = response.choices[0].message.content
+#         return latest_response.strip()
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return None
 
 
 
